@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.controllers.ConversionTest$ConvertXmlToFlightListTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-11-04T21:06:16" hostname="SUIK" time="0.095">
+  <properties/>
+  <testcase name="testConvertXmlToFlightListWithInvalidFile()" classname="org.example.controllers.ConversionTest$ConvertXmlToFlightListTests" time="0.076"/>
+  <testcase name="testConvertXmlToFlightListWithNullFile()" classname="org.example.controllers.ConversionTest$ConvertXmlToFlightListTests" time="0.005"/>
+  <testcase name="yep!" classname="org.example.controllers.ConversionTest$ConvertXmlToFlightListTests" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Fatal Error] invalid_flight_data.xml:6:17: Element type "направл" must be followed by either attribute specifications, ">" or "/>".
+нояб. 05, 2023 12:06:16 AM org.example.controllers.Conversion convertXmlToFlightList
+SEVERE: Ошибка при парсинге XML файла!
+нояб. 05, 2023 12:06:16 AM org.example.controllers.Conversion convertXmlToFlightList
+INFO: XML файл не выбран. Невозможно выполнить парсинг.
+]]></system-err>
+</testsuite>
