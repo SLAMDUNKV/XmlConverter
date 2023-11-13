@@ -1,10 +1,13 @@
-package org.example.controllers;
+package org.xmlconverter;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.xmlconverter.converter.filework.FileWorkController;
+import org.xmlconverter.converter.filework.FileWorkModel;
+import org.xmlconverter.converter.filework.FileWorkView;
 
 import javax.swing.*;
 import java.io.File;
@@ -15,23 +18,24 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-public class FileWorkTest {
-    private FileWork fileWork;
+class FileWorkTest {
+    private FileWorkView fileWorkView;
+    private FileWorkController fileWorkController;
+    private FileWorkModel fileWorkModel;
     private JFileChooser mockFileChooser;
     private Logger mockLogger;
 
     @BeforeEach
     void setUp() {
-        this.fileWork = new FileWork();
-
-        // Установка макетов JFileChooser и Logger
         this.mockFileChooser = Mockito.mock(JFileChooser.class);
         this.mockLogger = Mockito.mock(Logger.class);
-        this.fileWork.setFileChooser(mockFileChooser);
-        this.fileWork.setLogger(mockLogger);
+
+        this.fileWorkModel = new FileWorkModel();
+        this.fileWorkController = new FileWorkController(fileWorkModel, mockLogger);
+        this.fileWorkView = new FileWorkView(fileWorkController, mockFileChooser);
     }
 
     @Nested
@@ -45,11 +49,11 @@ public class FileWorkTest {
             when(mockFileChooser.getSelectedFile()).thenReturn(validXmlFile);
 
             // Вызываем метод openXmlFile
-            File result = fileWork.openXmlFile();
+            fileWorkView.openXmlFile();
 
             // Проверяем, что возвращенный файл совпадает с validXmlFile
-            assertEquals(validXmlFile, result);
-            Mockito.verify(mockLogger).info(Mockito.contains("XML файл успешно открыт:"));
+            assertEquals(validXmlFile, fileWorkController.getXmlFile());
+            Mockito.verify(mockLogger).info(Mockito.contains("Файл успешно открыт:"));
         }
 
         @Test
@@ -58,11 +62,11 @@ public class FileWorkTest {
             when(mockFileChooser.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
             when(mockFileChooser.getSelectedFile()).thenReturn(new File("No_file.xml"));
 
-            // Вызываем метод openXmlFile
-            File result = fileWork.openXmlFile();
-
             // Проверяем, что результат равен null для несуществующего файла
-            assertNull(result);
+            assertThrows(RuntimeException.class, () -> {
+                // Вызываем метод openXmlFile
+                fileWorkView.openXmlFile();
+            });
             Mockito.verify(mockLogger).severe(Mockito.contains("Невозможно прочитать выбранный файл:"));
         }
 
@@ -71,11 +75,11 @@ public class FileWorkTest {
             // Задаем поведение макета для метода showOpenDialog при отмене выбора файла
             when(mockFileChooser.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
 
-            // Вызываем метод openXmlFile
-            File result = fileWork.openXmlFile();
+            assertThrows(RuntimeException.class, () -> {
+                // Вызываем метод openXmlFile
+                fileWorkView.openXmlFile();
+            });
 
-            // Проверяем, что результат равен null из-за отмены выбора файла
-            assertNull(result);
             Mockito.verify(mockLogger).info("Выбор файла отменен.");
         }
     }
@@ -87,12 +91,12 @@ public class FileWorkTest {
             List<String[]> csvData = new ArrayList<>();
             csvData.add(new String[]{"рейс1", "время1", "направление1", "статус1", "тип1", "авиакомпания1"});
 
-            // // Задаем поведение макета fileChooser
+            // Задаем поведение макета fileChooser
             when(mockFileChooser.showSaveDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
             when(mockFileChooser.getSelectedFile()).thenReturn(new File("test"));
 
             // Вызываем метод writeCsvFile
-            fileWork.writeCsvFile(csvData);
+            fileWorkView.saveCsvFile(csvData);
 
             // Получаем содержимое записанного файла
             String fileContent = Files.readString(new File("test.csv").toPath());
@@ -105,7 +109,7 @@ public class FileWorkTest {
             assertEquals(expectedContent, fileContent);
 
             // Проверяем, что логгер записал сообщение об успешном сохранении
-            Mockito.verify(mockLogger).info(Mockito.contains("Файл успешно сохранён по пути:"));
+            Mockito.verify(mockLogger).info(Mockito.contains("Файл успешно создан:"));
         }
 
         @Test
@@ -117,10 +121,12 @@ public class FileWorkTest {
             when(mockFileChooser.getSelectedFile()).thenReturn(new File("test"));
 
             // Вызываем метод writeCsvFile без данных
-            fileWork.writeCsvFile(csvData);
-
+            assertThrows(RuntimeException.class, () -> {
+                // Вызываем метод openXmlFile
+                fileWorkView.saveCsvFile(csvData);
+            });
             // Проверяем, что логгер записал информационное сообщение
-            Mockito.verify(mockLogger).info("Нет данных для сохранения");
+            Mockito.verify(mockLogger).info("Нет данных для сохранения.");
         }
 
         @AfterEach
