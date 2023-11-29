@@ -1,4 +1,4 @@
-package org.xmlconverter;
+package org.xmlconverter.conversion;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConversionTest {
+public class ConversionModelTest {
     private ConversionModel conversionModel;
 
     @BeforeEach
@@ -67,10 +67,10 @@ public class ConversionTest {
             flightInfoList.add(flightInfo2);
 
             // Устанавливаем ожидаемое значение для airlineName
-            String expectedAirlineName = "авиакомпания1";
+            conversionModel.setAirlineName("авиакомпания1");
 
             // Вызываем тестируемую функцию
-            conversionModel.convertFlightListToCsvList(expectedAirlineName, flightInfoList);
+            conversionModel.convertFlightListToCsvList(flightInfoList);
 
             // Проверяем, что результат не равен null
             assertNotNull(conversionModel.getRecords());
@@ -91,8 +91,9 @@ public class ConversionTest {
         @Test
         public void testConvertFlightListToCsvListWithNullList() {
             // Вызываем тестируемую функцию с null входным списком
+            conversionModel.setAirlineName("авиакомпания1");
             assertThrows(NullPointerException.class,
-                    () -> conversionModel.convertFlightListToCsvList("авиакомпания1", null));
+                    () -> conversionModel.convertFlightListToCsvList( null));
             assertTrue(conversionModel.getRecords().isEmpty());
         }
     }

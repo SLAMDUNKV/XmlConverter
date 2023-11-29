@@ -19,17 +19,18 @@ public class FileWorkModel {
     private File xmlFile;
     private File csvFile;
 
-    public void createCsvFile(@NonNull File selectedFile) throws Exception {
-        selectedFile.createNewFile();
+    public boolean createCsvFile(@NonNull File selectedFile) throws Exception {
+        return selectedFile.createNewFile();
     }
 
-    public void writeCsvData(@NonNull List<String[]> csvRecords) {
+    public boolean writeCsvData(@NonNull List<String[]> csvRecords) {
         try (val writer = new FileWriter(csvFile.getAbsolutePath(), StandardCharsets.UTF_8);
              val csvPrinter = new CSVPrinter(writer, CSVFormat.Builder.create().setDelimiter(";").build())) {
             csvPrinter.printRecord("рейс", "время", "направление", "статус", "тип", "авиакомпания");
             for (String[] record : csvRecords) {
                 csvPrinter.printRecord((Object[]) record);
             }
+            return true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

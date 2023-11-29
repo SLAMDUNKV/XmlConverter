@@ -2,43 +2,65 @@ package org.xmlconverter.converter.filework;
 
 import lombok.val;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class FileWorkView {
     private final FileWorkController fileWorkController;
-    private final JFileChooser fileChooser;
+    private final Logger logger;
+    private final Scanner scanner;
 
-    public FileWorkView(FileWorkController fileWorkController) {
-        this.fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+    public FileWorkView(FileWorkController fileWorkController, Scanner scanner) {
         this.fileWorkController = fileWorkController;
-    }
-
-    // Конструктор для тестовых методов
-    public FileWorkView(FileWorkController fileWorkController, JFileChooser testFileChooser) {
-        this.fileChooser = testFileChooser;
-        this.fileWorkController = fileWorkController;
+        this.logger = Logger.getLogger(FileSystemView.class.getName());
+        this.scanner = scanner;
     }
 
     public void openXmlFile() {
-        // Настройка и отображение диалога выбора файла
-        fileChooser.setDialogTitle("Выберите файл");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("XML files (*.xml)", "xml"));
-        val openDialog = fileChooser.showOpenDialog(null);
+        logger.info("Выберите режим открытия XML-файла:\n1. Интерактивный режим\n2. Автоматический режим");
+        val choice = Integer.parseInt(scanner.nextLine());
 
-        fileWorkController.checkAndSetXmlFile(fileChooser, openDialog);
+        switch (choice) {
+            case 1 -> {
+                logger.info("Введите путь к XML-файлу:");
+                val xmlFilePath = Paths.get(scanner.nextLine());
+                fileWorkController.checkAndSetXmlFile(xmlFilePath);
+            }
+            case 2 -> {
+                val xmlFilePath = Paths.get(System.getProperty("user.home"), "Documents", "Airport.xml");
+                fileWorkController.checkAndSetXmlFile(xmlFilePath);
+            }
+            default -> {
+                logger.info("Неверный выбор режима.");
+                throw new RuntimeException();
+            }
+        }
     }
 
     public void saveCsvFile(List<String[]> csvRecords) {
-        // Настройка и отображение диалога выбора директории для сохранения
-        fileChooser.setDialogTitle("Выберите каталог для сохранения CSV-файла");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files (*.csv)", "csv"));
-        val saveDialog = fileChooser.showSaveDialog(null);
+        logger.info("Выберите режим сохранения CSV-файла:\n1. Интерактивный режим\n2. Автоматический режим");
+        val choice = Integer.parseInt(scanner.nextLine());
 
-        fileWorkController.createAndSetCsvFile(saveDialog, fileChooser);
-        fileWorkController.writeCsvDataToFile(csvRecords);
+        switch (choice) {
+            case 1 -> {
+                logger.info("Введите путь для сохранения CSV-файла:");
+                val csvFilePath = Paths.get(scanner.nextLine());
+                fileWorkController.createAndSetCsvFile(csvFilePath);
+                fileWorkController.writeCsvDataToFile(csvRecords);
+            }
+            case 2 -> {
+                val csvFilePath = Paths.get(System.getProperty("user.home"), "Documents");
+                fileWorkController.createAndSetCsvFile(csvFilePath);
+                fileWorkController.writeCsvDataToFile(csvRecords);
+            }
+            default -> {
+                logger.info("Неверный выбор режима.");
+                throw new RuntimeException();
+            }
+        }
 
     }
 }

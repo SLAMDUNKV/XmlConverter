@@ -1,22 +1,24 @@
-package org.xmlconverter.converter.consoleUtils;
+package org.xmlconverter.converter.conversion;
 
 import lombok.val;
 
+import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-public class ConsoleUtils {
+public class ConversionView {
+    private final ConversionController conversionController;
     private final Logger logger;
-    private final Scanner console;
 
-    public ConsoleUtils() {
-        this.logger = Logger.getLogger(ConsoleUtils.class.getName());
-        this.console = new Scanner(System.in);
+    public ConversionView(ConversionController conversionController) {
+        this.conversionController = conversionController;
+        this.logger = Logger.getLogger(ConversionView.class.getName());
     }
 
     // Метод для отображения CSV-данных
-    public void showCsv(List<String[]> csvData) {
+    public void showCsv() {
+        val csvData = conversionController.getCsvRecords();
         if (csvData != null && !csvData.isEmpty()) {
             // Вывод CSV-данных в консоль
             val line = new StringBuilder();
@@ -38,8 +40,7 @@ public class ConsoleUtils {
         }
     }
 
-    public String readAirlineName() {
-        logger.info("Введите название авиакомпании:");
-        return console.nextLine();
-    }
+
+
+
 }

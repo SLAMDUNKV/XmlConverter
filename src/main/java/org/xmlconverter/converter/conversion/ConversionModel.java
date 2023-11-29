@@ -2,6 +2,7 @@ package org.xmlconverter.converter.conversion;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -13,9 +14,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+
 public class ConversionModel {
+    @Getter
     private final List<String[]> records;
+    @Setter
+    private String airlineName;
 
     public ConversionModel() {
         this.records = new ArrayList<>();
@@ -47,7 +51,7 @@ public class ConversionModel {
     }
 
     // Метод преобразует список объектов Flight в список массивов строк, по выбранному названию авиакомпании
-    public void convertFlightListToCsvList(String airlineName, @NonNull List<FlightInfo> flightInfoList) {
+    public void convertFlightListToCsvList(@NonNull List<FlightInfo> flightInfoList) {
         for (FlightInfo flightInfo : flightInfoList) {
             if (airlineName.equalsIgnoreCase(flightInfo.getCompany())) {
                 String[] flightArray = new String[6];
@@ -62,6 +66,5 @@ public class ConversionModel {
                 this.records.add(flightArray);
             }
         }
-
     }
 }
