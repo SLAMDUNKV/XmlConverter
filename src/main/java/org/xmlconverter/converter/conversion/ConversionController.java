@@ -15,7 +15,7 @@ public class ConversionController {
     public ConversionController(ConversionModel conversionModel, Scanner scanner) {
         this.conversionModel = conversionModel;
         this.logger = Logger.getLogger(ConversionController.class.getName());
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
     }
 
     public void starConversion(File xmlFile) {

@@ -2,9 +2,6 @@ package org.xmlconverter.converter.conversion;
 
 import lombok.val;
 
-import java.io.File;
-import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class ConversionView {
