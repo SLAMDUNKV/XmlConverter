@@ -20,7 +20,7 @@ class FileWorkModelTest {
     }
 
     @Test
-    void createCsvFile_shouldCreateFile() {
+    void testCreateCsvFile() {
         try {
             File tempFile = File.createTempFile("temp", ".csv");
             fileWorkModel.createCsvFile(tempFile);
@@ -31,7 +31,7 @@ class FileWorkModelTest {
     }
 
     @Test
-    void writeCsvData_shouldWriteDataToFile() {
+    void testWriteCsvData() {
         try {
             File tempCsvFile = File.createTempFile("temp", ".csv");
             fileWorkModel.setCsvFile(tempCsvFile);
