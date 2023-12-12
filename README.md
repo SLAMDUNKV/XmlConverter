@@ -16,6 +16,7 @@ The project is designed to convert files containing information about airport fl
 
 - [Apache Commons CSV](https://mvnrepository.com/artifact/org.apache.commons/commons-csv) version 1.10.0
 - [IO Freefair Lombok](https://plugins.gradle.org/plugin/io.freefair.lombok) version 6.6.3
+- [SLF4J JDK14 Provider](https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14/2.0.9) version 2.0.9
 
 ## Installation
 
