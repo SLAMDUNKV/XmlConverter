@@ -1,10 +1,11 @@
-package org.xmlconverter.conversion;
+package org.xmlconverter.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.xmlconverter.converter.conversion.ConversionModel;
-import org.xmlconverter.converter.flight.FlightInfo;
+import org.xmlconverter.converter.service.ConversionModel;
+import org.xmlconverter.converter.service.FlightInfo;
+import lombok.val;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,15 +25,13 @@ public class ConversionModelTest {
     class ConvertXmlToFlightListTests {
         @Test
         public void testConvertXmlToFlightListWithValidFile() throws Exception {
-            File validXmlFile = new File("src/test/resources/test-data/valid_test_data.xml");
+            val validXmlFile = new File("src/test/resources/test-data/valid_test_data.xml");
             List<FlightInfo> flightInfoList = conversionModel.convertXmlToFlightList(validXmlFile);
-
             // Проверяем, что flightList не пустой и содержит ожидаемое количество элементов
             assertNotNull(flightInfoList);
             assertEquals(1, flightInfoList.size());
-
             // Проверяем, что данные в объектах Flight были успешно извлечены из XML
-            FlightInfo firstFlightInfo = flightInfoList.get(0);
+            val firstFlightInfo = flightInfoList.get(0);
             assertEquals("рейс1", firstFlightInfo.getId());
             assertEquals("время1", firstFlightInfo.getTime());
             assertEquals("направление1", firstFlightInfo.getDestination());
@@ -44,7 +43,7 @@ public class ConversionModelTest {
         @Test
         public void testConvertXmlToFlightListWithInvalidFile() {
             assertThrows(Exception.class, () -> {
-                File invalidXmlFile = new File("src/test/resources/test-data/invalid_test_data.xml");
+                val invalidXmlFile = new File("src/test/resources/test-data/invalid_test_data.xml");
                 conversionModel.convertXmlToFlightList(invalidXmlFile);
             });
         }
@@ -61,23 +60,18 @@ public class ConversionModelTest {
         void testConvertFlightListToCsvList() {
             // Создаем список Flight объектов для теста
             List<FlightInfo> flightInfoList = new ArrayList<>();
-            FlightInfo flightInfo1 = new FlightInfo("рейс1", "время1", "направление1", "статус1", "тип1", "авиакомпания1");
-            FlightInfo flightInfo2 = new FlightInfo("рейс2", "время2", "направление2", "статус2", "тип2", "авиакомпания2");
+            val flightInfo1 = new FlightInfo("рейс1", "время1", "направление1", "статус1", "тип1", "авиакомпания1");
+            val flightInfo2 = new FlightInfo("рейс2", "время2", "направление2", "статус2", "тип2", "авиакомпания2");
             flightInfoList.add(flightInfo1);
             flightInfoList.add(flightInfo2);
-
             // Устанавливаем ожидаемое значение для airlineName
             conversionModel.setAirlineName("авиакомпания1");
-
             // Вызываем тестируемую функцию
             conversionModel.convertFlightListToCsvList(flightInfoList);
-
             // Проверяем, что результат не равен null
             assertNotNull(conversionModel.getRecords());
-
             // Проверяем, что количество записей в результате соответствует ожидаемому
             assertEquals(1, conversionModel.getRecords().size());
-
             // Проверяем, что запись содержит правильные значения
             String[] record = conversionModel.getRecords().get(0);
             assertEquals("рейс1", record[0]);
