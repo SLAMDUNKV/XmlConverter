@@ -1,14 +1,11 @@
-package org.xmlconverter.converter.conversion;
+package org.xmlconverter.converter.service;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.w3c.dom.Document;
+import lombok.val;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xmlconverter.converter.flight.FlightInfo;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
@@ -28,18 +25,16 @@ public class ConversionModel {
     // Метод преобразует XML-файл в список объектов Flight
     public List<FlightInfo> convertXmlToFlightList(@NonNull File xmlFile) throws Exception {
         // Создание фабрики и парсера XML-документа
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(xmlFile);
-
+        val factory = DocumentBuilderFactory.newInstance();
+        val builder = factory.newDocumentBuilder();
+        val document = builder.parse(xmlFile);
         // Получение узлов с информацией о рейсах
-        NodeList nodeList = document.getElementsByTagName("самолёт");
+        val nodeList = document.getElementsByTagName("самолёт");
         List<FlightInfo> flightInfoList = new ArrayList<>();
         for (int i = 0; i < nodeList.getLength(); i++) {
-            Element element = (Element) nodeList.item(i);
+            val element = (Element) nodeList.item(i);
             // Создание объектов Flight и добавление их в список
-            FlightInfo flightInfo = new FlightInfo(
-                    element.getAttribute("рейс"),
+            val flightInfo = new FlightInfo(element.getAttribute("рейс"),
                     element.getElementsByTagName("время").item(0).getTextContent(),
                     element.getElementsByTagName("направление").item(0).getTextContent(),
                     element.getElementsByTagName("статус").item(0).getTextContent(),
@@ -55,7 +50,6 @@ public class ConversionModel {
         for (FlightInfo flightInfo : flightInfoList) {
             if (airlineName.equalsIgnoreCase(flightInfo.getCompany())) {
                 String[] flightArray = new String[6];
-
                 // Заполнение массива строк
                 flightArray[0] = flightInfo.getId();
                 flightArray[1] = flightInfo.getTime();

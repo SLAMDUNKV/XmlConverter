@@ -1,31 +1,29 @@
-package org.xmlconverter.converter.filework;
+package org.xmlconverter.converter.bean;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import javax.swing.filechooser.FileSystemView;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
+@Slf4j
 public class FileWorkView {
     private final FileWorkController fileWorkController;
-    private final Logger logger;
     private final Scanner scanner;
 
     public FileWorkView(FileWorkController fileWorkController, Scanner scanner) {
         this.fileWorkController = fileWorkController;
-        this.logger = Logger.getLogger(FileSystemView.class.getName());
         this.scanner = scanner;
     }
 
-    public void openXmlFile() {
-        logger.info("Выберите режим открытия XML-файла:\n1. Интерактивный режим\n2. Автоматический режим");
+    public void openXmlFile() throws Exception {
+        log.info("Выберите режим открытия XML-файла:\n1. Интерактивный режим\n2. Автоматический режим");
         val choice = Integer.parseInt(scanner.nextLine());
 
         switch (choice) {
             case 1 -> {
-                logger.info("Введите путь к XML-файлу:");
+                log.info("Введите путь к XML-файлу:");
                 val xmlFilePath = Paths.get(scanner.nextLine());
                 fileWorkController.checkAndSetXmlFile(xmlFilePath);
             }
@@ -33,20 +31,17 @@ public class FileWorkView {
                 val xmlFilePath = Paths.get(System.getProperty("user.home"), "Documents", "Airport.xml");
                 fileWorkController.checkAndSetXmlFile(xmlFilePath);
             }
-            default -> {
-                logger.info("Неверный выбор режима.");
-                throw new RuntimeException();
-            }
+            default -> throw new IncorrectChoiceException("Неверный выбор режима.");
         }
     }
 
-    public void saveCsvFile(List<String[]> csvRecords) {
-        logger.info("Выберите режим сохранения CSV-файла:\n1. Интерактивный режим\n2. Автоматический режим");
+    public void saveCsvFile(List<String[]> csvRecords) throws Exception {
+        log.info("Выберите режим сохранения CSV-файла:\n1. Интерактивный режим\n2. Автоматический режим");
         val choice = Integer.parseInt(scanner.nextLine());
 
         switch (choice) {
             case 1 -> {
-                logger.info("Введите путь для сохранения CSV-файла:");
+                log.info("Введите путь для сохранения CSV-файла:");
                 val csvFilePath = Paths.get(scanner.nextLine());
                 fileWorkController.createAndSetCsvFile(csvFilePath);
                 fileWorkController.writeCsvDataToFile(csvRecords);
@@ -56,10 +51,7 @@ public class FileWorkView {
                 fileWorkController.createAndSetCsvFile(csvFilePath);
                 fileWorkController.writeCsvDataToFile(csvRecords);
             }
-            default -> {
-                logger.info("Неверный выбор режима.");
-                throw new RuntimeException();
-            }
+            default -> throw new IncorrectChoiceException("Неверный выбор режима.");
         }
 
     }

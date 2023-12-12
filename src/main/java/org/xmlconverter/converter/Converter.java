@@ -1,44 +1,34 @@
 package org.xmlconverter.converter;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.xmlconverter.converter.conversion.ConversionView;
-import org.xmlconverter.converter.conversion.ConversionController;
-import org.xmlconverter.converter.conversion.ConversionModel;
-import org.xmlconverter.converter.filework.FileWorkController;
-import org.xmlconverter.converter.filework.FileWorkModel;
-import org.xmlconverter.converter.filework.FileWorkView;
+import org.xmlconverter.converter.service.ConversionController;
+import org.xmlconverter.converter.service.ConversionModel;
+import org.xmlconverter.converter.service.ConversionView;
+import org.xmlconverter.converter.bean.FileWorkController;
+import org.xmlconverter.converter.bean.FileWorkModel;
+import org.xmlconverter.converter.bean.FileWorkView;
 
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
+@Slf4j
 public class Converter {
-    private final Logger logger = Logger.getLogger(Converter.class.getName());
 
     public void convertXmlToCsv() {
         try (val scanner = new Scanner(System.in)) {
             val fileWorkModel = new FileWorkModel();
             val fileWorkController = new FileWorkController(fileWorkModel);
             val fileWorkView = new FileWorkView(fileWorkController, scanner);
-
             val conversionModel = new ConversionModel();
             val conversionController = new ConversionController(conversionModel, scanner);
             val conversionView = new ConversionView(conversionController);
-
             fileWorkView.openXmlFile();
-
             conversionController.readAirlineName();
-
             conversionController.starConversion(fileWorkController.getXmlFile());
-
-            conversionView.showCsv();
-
+            conversionView.displayCsvData();
             fileWorkView.saveCsvFile(conversionController.getCsvRecords());
-
-        } catch (RuntimeException e) {
-            logger.log(Level.INFO, "Произошла ошибка во время работы программы.", e);
-            System.exit(1);
+        } catch (Exception exception) {
+            log.error("Произошла ошибка во время работы программы.", exception);
         }
     }
 }

@@ -1,30 +1,27 @@
-package org.xmlconverter.converter.conversion;
+package org.xmlconverter.converter.service;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
-
+@Slf4j
 public class ConversionController {
     private final ConversionModel conversionModel;
-    private final Logger logger;
     private final Scanner scanner;
-
-
+    
     public ConversionController(ConversionModel conversionModel, Scanner scanner) {
         this.conversionModel = conversionModel;
-        this.logger = Logger.getLogger(ConversionController.class.getName());
         this.scanner = scanner;
     }
 
-    public void starConversion(File xmlFile) {
+    public void starConversion(File xmlFile) throws ParsingXmlException {
         try {
             conversionModel.convertFlightListToCsvList(conversionModel.convertXmlToFlightList(xmlFile));
-            logger.info("Парсинг XML файла прошёл успешно!");
-        } catch (Exception e) {
-            logger.severe("Ошибка при парсинге XML файла!");
-            throw new RuntimeException(e);
+            log.info("Парсинг XML-файла прошёл успешно!");
+        } catch (Exception exception ) {
+            throw new ParsingXmlException("Ошибка при парсинге XML-фала.", exception);
         }
     }
 
@@ -33,7 +30,7 @@ public class ConversionController {
     }
 
     public void readAirlineName() {
-        logger.info("Введите название авиакомпании:");
+        log.info("Введите название авиакомпании:");
         conversionModel.setAirlineName(scanner.nextLine());
     }
 

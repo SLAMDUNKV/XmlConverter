@@ -1,4 +1,4 @@
-package org.xmlconverter.converter.flight;
+package org.xmlconverter.converter.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

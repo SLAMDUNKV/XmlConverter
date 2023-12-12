@@ -1,20 +1,17 @@
-package org.xmlconverter.converter.conversion;
+package org.xmlconverter.converter.service;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import java.util.logging.Logger;
-
+@Slf4j
 public class ConversionView {
     private final ConversionController conversionController;
-    private final Logger logger;
-
     public ConversionView(ConversionController conversionController) {
         this.conversionController = conversionController;
-        this.logger = Logger.getLogger(ConversionView.class.getName());
     }
 
     // Метод для отображения CSV-данных
-    public void showCsv() {
+    public void displayCsvData() throws DisplayCsvDataException {
         val csvData = conversionController.getCsvRecords();
         if (csvData != null && !csvData.isEmpty()) {
             // Вывод CSV-данных в консоль
@@ -30,14 +27,11 @@ public class ConversionView {
                     }
                 }
             }
-            logger.info(line.toString());
+            log.info(line.toString());
         } else {
-            logger.info("Нет данных для отображения");
-            throw new RuntimeException();
+            throw new DisplayCsvDataException("Нет данных для отображения");
         }
     }
-
-
 
 
 }
